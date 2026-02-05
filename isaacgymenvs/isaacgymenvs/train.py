@@ -28,6 +28,13 @@
 # CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+# NumPy 2.x compatibility: isaacgym uses deprecated np.float / np.int (removed in NumPy 2)
+import numpy as _np
+for _attr, _replacement in [("float", _np.float64), ("int", _np.int64), ("bool", _np.bool_)]:
+    if not hasattr(_np, _attr):
+        setattr(_np, _attr, _replacement)
+
 import logging
 import os
 import datetime
