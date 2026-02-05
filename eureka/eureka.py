@@ -4,7 +4,7 @@ import json
 import logging 
 import matplotlib.pyplot as plt
 import os
-import openai
+from openai import OpenAI
 import re
 import subprocess
 from pathlib import Path
@@ -25,7 +25,7 @@ def main(cfg):
     logging.info(f"Workspace: {workspace_dir}")
     logging.info(f"Project Root: {EUREKA_ROOT_DIR}")
 
-    openai.api_key = os.getenv("OPENAI_API_KEY")
+    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
     task = cfg.env.task
     task_description = cfg.env.description
@@ -88,12 +88,13 @@ def main(cfg):
                 break
             for attempt in range(1000):
                 try:
-                    response_cur = openai.ChatCompletion.create(
+                    response_cur = client.chat.completions.create(
                         model=model,
                         messages=messages,
                         temperature=cfg.temperature,
                         n=chunk_size
                     )
+                    response_cur = response_cur.model_dump()
                     total_samples += chunk_size
                     break
                 except Exception as e:
